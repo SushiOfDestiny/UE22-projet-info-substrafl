@@ -3,33 +3,14 @@ from typing import List
 
 import tensorflow as tf
 
-# parameter is either weight or  of a layer
+# we ignore batch normalization
+# we ignore device handling
 
-# model_parameters() -> ??
+
+# model_parameters() -> model.weights attribute
 
 
-# get_parameters -> get_weights()
-
-# set_parameters() -> set_weights() ??
-
-def set_parameters(
-    model: tf.keras.Model,
-    parameters: List[tf.Variable]
-):
-    """Sets the parameters of a VariableFlow model to the provided parameters.
-    This function modifies the given model internally and therefore returns nothing.
-
-    Args:
-        model (tf.keras.Model): The VariableFlow model to modify.
-        parameters (List[tf.Variable]): Model parameters, as ordered by the standard iterators.
-            The trainable parameters should come first.
-    """
-    iter_params = model.get_weights() # assuming the method returns a copy
-    n_parameters = len(list(iter_params))
-    assert n_parameters == len(parameters), "Length of model parameters and provided parameters are unequal."
-
-    for layer, parameter in zip(model.layers, parameters):
-        layer.set_weights(parameter)
+# get_parameters -> get_weights() returns a copy
 
 
 def increment_parameters(
@@ -117,3 +98,24 @@ def weighted_sum_parameters(
         weighted_sum.append(sum(param * coeff for param, coeff in zip(parameters_to_sum, coefficient_list)))
 
     return weighted_sum
+
+
+# set_parameters() -> set_weights() ?? yes
+
+
+def zeros_like_parameters(
+    model: tf.keras.Model,
+) -> List[tf.Variable]:
+    """Copy the model parameters from the provided tf model and sets values to zero.
+
+    Args:
+
+    Returns:
+        typing.List[tf.Variable]: The list of torch parameters of the provided model
+        with values set to zero.
+    """
+    parameters = []
+    for layer_weights in model.weights:
+        parameters.append(tf.zeros_like(input=layer_weights))
+    
+    return parameters
