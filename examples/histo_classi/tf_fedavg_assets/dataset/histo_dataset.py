@@ -12,6 +12,7 @@ import tensorflow_datasets as tfds
 
 def setup_histo(data_path, N_CLIENTS):
     # Download the dataset
+    # Proportion of train and test samples is arbitrary set to 80% - 20%
     (train_ds, test_ds), metadata = tfds.load('colorectal_histology',split=['train[:80%]', 'train[80%:]'],with_info=True,
         as_supervised=True)
 
